@@ -19,6 +19,7 @@ package jp.co.cyberagent.android.gpuimage.filter;
 import android.annotation.SuppressLint;
 import android.opengl.GLES20;
 
+import android.util.Log;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -135,12 +136,14 @@ public class GPUImageFilterGroup extends GPUImageFilter {
      */
     @Override
     public void onOutputSizeChanged(final int width, final int height) {
+        Log.e("onOutputSizeChanged", "onOutputSizeChanged: width = " + width + "; height = " + height);
         super.onOutputSizeChanged(width, height);
         if (frameBuffers != null) {
             destroyFramebuffers();
         }
 
         int size = filters.size();
+        Log.e("onOutputSizeChanged", "filters.size() = " + size);
         for (int i = 0; i < size; i++) {
             filters.get(i).onOutputSizeChanged(width, height);
         }
@@ -154,10 +157,8 @@ public class GPUImageFilterGroup extends GPUImageFilter {
                 GLES20.glGenFramebuffers(1, frameBuffers, i);
                 GLES20.glGenTextures(1, frameBufferTextures, i);
                 GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, frameBufferTextures[i]);
-                GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, width, height, 0,
-                        GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
-                GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
-                        GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+                GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, width, height, 0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
+                GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
                 GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
                         GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
                 GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
